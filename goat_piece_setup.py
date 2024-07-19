@@ -12,14 +12,12 @@ print('no random - this is to compare')
 def deaccent(text):
     # Decompose the string into base characters and combining characters
     decomposed = unicodedata.normalize('NFD', text)
-    
     # Filter out the combining characters (diacritics)
     stripped = ''.join(ch for ch in decomposed if unicodedata.category(ch) != 'Mn')
-    
     return stripped.lower()
+
 def pad_non_alphanumeric(input_str):
     return re.sub(r'([^\w\s])', r' \1 ', input_str)
-
 
 if len(sys.argv) == 1:
     print("Received no arguments. Setting default parameters")
@@ -31,7 +29,7 @@ if len(sys.argv) == 1:
     NUM_TO_ADD_FREQ = 50
     FREQ_TRAIN_NUM = 10_000
     DELETE_TRAIN_NUM = 10_000
-    LOSS_TRAIN_NUM = 10_000
+    LOSS_TRAIN_NUM = 40_000
     LOSS_TEST_NUM = 2_000
 else:
     print(f"Received arguments: {sys.argv}")
@@ -51,12 +49,12 @@ NUM_EXAMPLES = 100_000
 MAX_TOKS_PER_INPUT = 256
 TRAIN_PROPORTION = 0.5
 
-if os.path.exists('difference_exp_test.txt'):
-    with open('difference_exp_train.txt', 'r') as f:
+if os.path.exists('data/difference_exp_test.txt'):
+    with open('data/difference_exp_train.txt', 'r') as f:
        train_lines = f.readlines()
-    with open('difference_exp_test.txt', 'r') as f:
+    with open('data/difference_exp_test.txt', 'r') as f:
        test_lines = f.readlines()
-    x = run_goat_piece(train_corpus_file='difference_exp_train.txt', train_lines=train_lines, test_lines=test_lines, num_tokens_desired=NUM_TOKENS_DESIRED, use_loss_every=USE_LOSS_EVERY, num_to_delete=NUM_TO_DELETE, num_to_add_loss=NUM_TO_ADD_LOSS, num_to_add_freq=NUM_TO_ADD_FREQ, FREQ_TRAIN_NUM=FREQ_TRAIN_NUM, DELETE_TRAIN_NUM=DELETE_TRAIN_NUM, LOSS_TRAIN_NUM=LOSS_TRAIN_NUM, LOSS_TEST_NUM=LOSS_TEST_NUM, include_random=False, retire_after=3, experiment_name=EXPERIMENT_NAME)
+    x = run_goat_piece(train_corpus_file='data/difference_exp_train.txt', train_lines=train_lines, test_lines=test_lines, num_tokens_desired=NUM_TOKENS_DESIRED, use_loss_every=USE_LOSS_EVERY, num_to_delete=NUM_TO_DELETE, num_to_add_loss=NUM_TO_ADD_LOSS, num_to_add_freq=NUM_TO_ADD_FREQ, FREQ_TRAIN_NUM=FREQ_TRAIN_NUM, DELETE_TRAIN_NUM=DELETE_TRAIN_NUM, LOSS_TRAIN_NUM=LOSS_TRAIN_NUM, LOSS_TEST_NUM=LOSS_TEST_NUM, include_random=False, retire_after=3, experiment_name=EXPERIMENT_NAME)
     print(x)
 x = np.array(x)
 np.save(EXPERIMENT_NAME + '_.npy', x)

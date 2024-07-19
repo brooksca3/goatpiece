@@ -19,7 +19,7 @@ def get_tokenizer(tok_ls, file_append=''):
 
     # Step 1: Create vocab and save it to vocab.json
     vocab = {str(token): i for i, token in enumerate(tok_ls)}
-    with open('vocab.json', 'w') as f:
+    with open('tokenizer_files/vocab.json', 'w') as f:
         json.dump(vocab, f)
 
     # Step 2: Create the tokenizer model
@@ -31,12 +31,12 @@ def get_tokenizer(tok_ls, file_append=''):
     tokenizer.decoder = decoders.WordPiece()
 
     # Save the tokenizer
-    tokenizer.save(file_append + "custom_tokenizer.json")
+    tokenizer.save('tokenizer_files/' + file_append + "custom_tokenizer.json")
 
     # Step 3: Load the tokenizer using transformers
     from transformers import PreTrainedTokenizerFast
 
-    tokenizer = PreTrainedTokenizerFast(tokenizer_file=file_append + "custom_tokenizer.json")
+    tokenizer = PreTrainedTokenizerFast(tokenizer_file='tokenizer_files/' + file_append + "custom_tokenizer.json")
     tokenizer.pad_token = '[PAD]'
     tokenizer.unk_token = '[UNK]'
     return tokenizer

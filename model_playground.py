@@ -45,10 +45,10 @@ def calculate_perplexity_with_gpt2_loss(tokenizer, training_data, test_data, con
             vocab_size=tokenizer.vocab_size,
             n_positions=256,
             n_ctx=256,
-            n_embd=768,
+            n_embd=768 // 2,
             n_layer=4,
             n_head=4,
-            n_inner = 768
+            n_inner = 768 // 2
         )
 
     model = GPT2LMHeadModel(config)
@@ -97,7 +97,7 @@ def calculate_perplexity_with_gpt2_loss(tokenizer, training_data, test_data, con
 
     return -1 * final_metrics['average_neg_log_likelihood'] * total_tokens
 
-def get_model(tokenizer, training_data, config=None, batch_size=16, epochs=1):
+def get_model(tokenizer, training_data, config=None, batch_size=1600, epochs=1):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"device is {device}")
 # Customize pre-tokenization and decoding
@@ -119,10 +119,10 @@ def get_model(tokenizer, training_data, config=None, batch_size=16, epochs=1):
             vocab_size=tokenizer.vocab_size,
             n_positions=256,
             n_ctx=256,
-            n_embd=768,
-            n_layer=3,
-            n_head=3,
-            n_inner=768
+            n_embd=768 // 2,
+            n_layer=4,
+            n_head=4,
+            n_inner=768 // 2
         )
 
     model = GPT2LMHeadModel(config)

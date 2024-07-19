@@ -153,7 +153,7 @@ def filter_and_sort_words(word_likelihoods, word_frequencies, frequency_threshol
 #                 last_token = token
 
 #     return pair_likelihoods, pair_freqs
-def compute_pair_log_likelihoods(test_data, model, tokenizer, batch_size=32):
+def compute_pair_log_likelihoods(test_data, model, tokenizer, batch_size=1024):
     pair_likelihoods = defaultdict(float)
     pair_freqs = defaultdict(int)
 
@@ -177,6 +177,11 @@ def compute_pair_log_likelihoods(test_data, model, tokenizer, batch_size=32):
             # Process the batch
             batch_input_ids = input_ids[start_idx:end_idx]
             batch_attention_mask = attention_mask[start_idx:end_idx]
+
+
+            # print(f"Batch {batch_idx+1}/{num_batches}")
+            # print(f"batch_input_ids shape: {batch_input_ids.shape}")
+            # print(f"batch_attention_mask shape: {batch_attention_mask.shape}")
 
             # Get model outputs for the batch
             outputs = model(batch_input_ids, attention_mask=batch_attention_mask)
@@ -310,7 +315,7 @@ def strawberry_mutate(ls, perma_tokens, temp_tokenizer, training_data_list, trai
 
     tokenizer = get_tokenizer(pruned_ls + perma_tokens, file_append=experiment_name)
 
-    model = get_model(tokenizer, training_data_list, batch_size=32)
+    model = get_model(tokenizer, training_data_list)
 
     word_likelihoods, word_freqs = compute_pair_log_likelihoods(test_data_list, model, tokenizer)
 
@@ -354,7 +359,7 @@ def strawberry_mutate(ls, perma_tokens, temp_tokenizer, training_data_list, trai
 
 def merge_and_assess(test_data, train_data, tokenizer, current_tokens, n, m, experiment_name='default_name', use_freq=False):
     # Step 1: Get data on loss incurred by pairs of tokens
-    model = get_model(tokenizer, train_data, batch_size=32)
+    model = get_model(tokenizer, train_data)
     pair_loss_dict, pair_freq_dict = compute_pair_log_likelihoods(test_data, model, tokenizer)
 
     # Step 2: Sort pairs by loss
@@ -380,7 +385,7 @@ def merge_and_assess(test_data, train_data, tokenizer, current_tokens, n, m, exp
     # Step 4: Combine new tokens with the original set of tokens
     all_tokens = list(current_tokens) + merged_tokens
     temp_tokenizer = get_tokenizer(all_tokens, file_append=experiment_name)
-    temp_model = get_model(temp_tokenizer, train_data, batch_size=32)
+    temp_model = get_model(temp_tokenizer, train_data)
     # Step 5: Get data on loss incurred by individual tokens
     token_loss_dict, token_freq_dict = compute_token_log_likelihoods(test_data, temp_model, temp_tokenizer)  # Placeholder for actual function call
 

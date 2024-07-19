@@ -103,7 +103,7 @@ def run_goat_piece(train_corpus_file, train_lines, test_lines, num_tokens_desire
             start_time = time.time()
             temp_tokenizer = get_tokenizer(current_tokens, file_append=experiment_name)
             ## added new_tokens here to the toks_of_interest to protect tokens which have just been added
-            tokens_to_remove = select_tokens_to_remove(train_corpus_for_deletion, temp_tokenizer, current_tokens, perma_tokens + new_tokens, num_to_delete, include_random=include_random, rand_prop=0.5, retired_tokens=retired_tokens)
+            tokens_to_remove = select_tokens_to_remove(train_corpus_for_deletion, temp_tokenizer, current_tokens, perma_tokens + new_tokens, num_to_delete, include_random=include_random, rand_prop=0.2, retired_tokens=retired_tokens)
             print(f"tokens removed: {tokens_to_remove}")
             for tok in tokens_to_remove:
                 if tok in current_tokens:
@@ -118,7 +118,7 @@ def run_goat_piece(train_corpus_file, train_lines, test_lines, num_tokens_desire
             print(f"deletion time: {end_time - start_time}")
             #########
 
-        if (num_iteration + 1) % use_loss_every == 0 and len(current_tokens) > 1000:
+        if (num_iteration + 1) % use_loss_every == 0 and len(current_tokens) > 900:
             start_time = time.time()
             # new_tokens = add_with_loss(current_tokens, train_lines[:LOSS_TRAIN_NUM], test_lines[:LOSS_TEST_NUM], num_to_add_loss, experiment_name)
             tokenizer = get_tokenizer(current_tokens, file_append=experiment_name)
