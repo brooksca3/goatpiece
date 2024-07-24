@@ -20,7 +20,7 @@ def get_total_tokens(encodings, tokenizer):
     return sum(sum(1 for token_id in sequence if token_id != PAD_TOKEN_ID) for sequence in encodings["input_ids"])
 
 
-def calculate_perplexity_with_gpt2_loss(tokenizer, training_data, test_data, config=None, batch_size=32, epochs=2):
+def calculate_perplexity_with_gpt2_loss(tokenizer, training_data, test_data, config=None, batch_size=1600, epochs=1):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"device is {device}")
 # Customize pre-tokenization and decoding
@@ -39,6 +39,17 @@ def calculate_perplexity_with_gpt2_loss(tokenizer, training_data, test_data, con
         tokenizer=tokenizer,
         mlm=False,
     )
+    # if not config:
+    # # Initialize GPT-2 model
+    #     config = GPT2Config(
+    #         vocab_size=tokenizer.vocab_size,
+    #         n_positions=256,
+    #         n_ctx=256,
+    #         n_embd=768 // 2,
+    #         n_layer=4,
+    #         n_head=4,
+    #         n_inner = 768 // 2
+    #     )
     if not config:
     # Initialize GPT-2 model
         config = GPT2Config(
@@ -48,7 +59,7 @@ def calculate_perplexity_with_gpt2_loss(tokenizer, training_data, test_data, con
             n_embd=768 // 2,
             n_layer=4,
             n_head=4,
-            n_inner = 768 // 2
+            n_inner=768 // 2
         )
 
     model = GPT2LMHeadModel(config)
@@ -66,7 +77,7 @@ def calculate_perplexity_with_gpt2_loss(tokenizer, training_data, test_data, con
         num_train_epochs=epochs,
         per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size,
-        save_steps=1_000_000,
+        save_steps=1_000_000_000,
         save_total_limit=0,
     )
 
@@ -97,7 +108,7 @@ def calculate_perplexity_with_gpt2_loss(tokenizer, training_data, test_data, con
 
     return -1 * final_metrics['average_neg_log_likelihood'] * total_tokens
 
-def get_model(tokenizer, training_data, config=None, batch_size=1600, epochs=1):
+def get_model(tokenizer, training_data, config=None, batch_size=800, epochs=1):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"device is {device}")
 # Customize pre-tokenization and decoding
@@ -139,7 +150,7 @@ def get_model(tokenizer, training_data, config=None, batch_size=1600, epochs=1):
         num_train_epochs=epochs,
         per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size,
-        save_steps=1_000_000,
+        save_steps=1_000_000_000_000,
         save_total_limit=0,
     )
 
